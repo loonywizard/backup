@@ -44,17 +44,25 @@ if [ $newFolderWasCreated == true ]; then
 
 else
 
+  echo "New files were added to $backupFolder at $currentDate" >> $reportFilename
+
+  changedFilesInfo=""
+
   for file in $files; do
     if [ -e "$backupFolder/$file" ]; then
       oldFileSize=$(stat -c%s "$backupFolder/$file")
       newFileSize=$(stat -c%s "$sourceFolder/$file")
       if [ $oldFileSize -ne $newFileSize ]; then
         mv "$backupFolder/$file" "$backupFolder/$file.$currentDate"
-        cp "$sourceFolder/$file" "$backupFolder/$file"  
+        cp "$sourceFolder/$file" "$backupFolder/$file"
+        changedFilesInfo=$changedFilesInfo"$file $file.$currentDate "
       fi
     else
       cp "$sourceFolder/$file" "$backupFolder/$file"
+      echo "$file" >> $reportFilename
     fi
   done
+
+  echo "$changedFilesInfo" >> $reportFilename
 
 fi
