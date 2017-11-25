@@ -29,9 +29,23 @@ if [ ! -d "$sourceFolder" ]; then
   exit
 fi
 
-if [ $newFolderWasCreated == true ]; then
+if [ $newFolderWasCreated == true ]; then  
   files=$(ls -p "$sourceFolder" | grep -v /)
   for file in $files; do
     cp "$sourceFolder/$file" "$backupFolder/$file"
+  done
+else
+  files=$(ls -p "$sourceFolder" | grep -v /)
+  for file in $files; do
+    if [ -e "$backupFolder/$file" ]; then
+      oldFileSize=$(stat -c%s "$backupFolder/$file")
+      newFileSize=$(stat -c%s "$sourceFolder/$file")
+      if [ $oldFileSize -ne $newFileSize ]; then
+        mv "$backupFolder/$file" "$backupFolder/$file.$currentDate"
+        cp "$sourceFolder/$file" "$backupFolder/$file"  
+      fi
+    else
+      cp "$sourceFolder/$file" "$backupFolder/$file"
+    fi
   done
 fi
