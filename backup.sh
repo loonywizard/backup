@@ -29,13 +29,21 @@ if [ ! -d "$sourceFolder" ]; then
   exit
 fi
 
-if [ $newFolderWasCreated == true ]; then  
-  files=$(ls -p "$sourceFolder" | grep -v /)
+reportFilename="$HOME/backup-report"
+
+files=$(ls -p "$sourceFolder" | grep -v /)
+
+if [ $newFolderWasCreated == true ]; then
+
+  echo "New catalog $backupFolder was created at $currentDate" >> $reportFilename
+  
   for file in $files; do
     cp "$sourceFolder/$file" "$backupFolder/$file"
+    echo "$file" >> $reportFilename
   done
+
 else
-  files=$(ls -p "$sourceFolder" | grep -v /)
+
   for file in $files; do
     if [ -e "$backupFolder/$file" ]; then
       oldFileSize=$(stat -c%s "$backupFolder/$file")
@@ -48,4 +56,5 @@ else
       cp "$sourceFolder/$file" "$backupFolder/$file"
     fi
   done
+
 fi
