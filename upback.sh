@@ -9,14 +9,16 @@ if [ ! -d "$lastBackupFolder" ]; then
   exit
 fi
 
-files=$(ls "$lastBackupFolder" | grep -E -v ".[0-9]{4}-[0-9]{2}-[0-9]{2}")
+cd "$lastBackupFolder"
 
-restoreFolder="$HOME/restore"
+files=$(find . -type f | grep -E -v ".[0-9]{4}-[0-9]{2}-[0-9]{2}")
+
+restoreFolder="$HOME/restore/"
 
 if [ ! -d "$restoreFolder" ]; then
   mkdir "$restoreFolder"
 fi
 
 echo "$files" | while read f; do
-  cp "$lastBackupFolder/$f" "$restoreFolder/$f"
+  cp --parents "$f" "$restoreFolder/"
 done
