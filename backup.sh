@@ -8,7 +8,12 @@ currentDate=`date +%Y-%m-%d`
 
 lastBackupDate=$(echo "$lastBackupFolder" | grep -o -E "[0-9]{4}-[0-9]{2}-[0-9]{2}")
 
-lastBackupDateInSeconds=$(date -d $lastBackupDate +%s)
+lastBackupDateInSeconds=0
+
+if [ $lastBackupDate ]; then
+  lastBackupDateInSeconds=$(date -d $lastBackupDate +%s)
+fi
+
 currentDateInSeconds=$(date -d $currentDate +%s)
 
 backupFolder=""
