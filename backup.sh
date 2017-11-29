@@ -68,7 +68,7 @@ files=$(find . -type f)
 #   if not, rename old file to filename.YYYY-MM-DD and copy new file 
 if [ $newFolderWasCreated == true ]; then
 
-  echo "New catalog $backupFolder was created at $currentDate" >> $reportFilename
+  echo "$backupFolder created at $currentDate" >> $reportFilename
 
   echo "$files" | while read filename; do
     
@@ -76,14 +76,10 @@ if [ $newFolderWasCreated == true ]; then
     # file is located, with --parents flag we need to specify destination as folder,
     # not as folder and filename
     cp --parents "$filename" "$backupFolder/"
-    echo "$filename" >> $reportFilename
+    echo "$filename copied to $backupFolder at $currentDate" >> $reportFilename
   done
 
 else
-
-  echo "New files were added to $backupFolder at $currentDate" >> $reportFilename
-
-  changedFilesInfo=""
 
   echo "$files" | while read filename; do
     
@@ -100,15 +96,14 @@ else
         mv "$backupFolder/$filename" "$backupFolder/$filename.$currentDate"
         cp "$sourceFolder/$filename" "$backupFolder/$filename"
         
-        changedFilesInfo=$changedFilesInfo"$filename $filename.$currentDate "
+        echo "$filename was renamed to $filename.$currentDate $currentDate" >> $reportFilename
+        echo "$filename copied to $backupFolder at $currentDate" >> $reportFilename
       fi
 
     else
       cp --parents "$filename" "$backupFolder/"
-      echo "$filename" >> $reportFilename
+      echo "$filename copied to $backupFolder at $currentDate" >> $reportFilename
     fi
   done
-
-  echo "$changedFilesInfo" >> $reportFilename
 
 fi
