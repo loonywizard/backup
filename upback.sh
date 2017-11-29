@@ -20,5 +20,9 @@ if [ ! -d "$restoreFolder" ]; then
 fi
 
 echo "$files" | while read f; do
+  if [ -d "$restoreFolder/$f" ]; then
+    echo "Overwriting directory $restoreFolder$f with file $f"
+    rm -rf "$restoreFolder/$f"
+  fi
   cp --parents "$f" "$restoreFolder/"
 done
