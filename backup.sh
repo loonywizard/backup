@@ -31,16 +31,16 @@ fi
 
 reportFilename="$HOME/backup-report"
 
-files=$(ls -p "$sourceFolder" | grep -v /)
+#files=$(ls -p "$sourceFolder" | grep -v /)
 
 if [ $newFolderWasCreated == true ]; then
 
   echo "New catalog $backupFolder was created at $currentDate" >> $reportFilename
   
-  for file in $files; do
-    cp "$sourceFolder/$file" "$backupFolder/$file"
-    echo "$file" >> $reportFilename
-  done
+  ls -f "$sourceFolder" | while read f; do
+    cp "$sourceFolder/$f" "$backupFolder/$f"
+    echo "$f" >> $reportFilename
+  done < "$sourceFolder"
 
 else
 
@@ -48,18 +48,18 @@ else
 
   changedFilesInfo=""
 
-  for file in $files; do
-    if [ -e "$backupFolder/$file" ]; then
-      oldFileSize=$(stat -c%s "$backupFolder/$file")
-      newFileSize=$(stat -c%s "$sourceFolder/$file")
+  ls -f "$sourceFolder" | while read f; do
+    if [ -e "$backupFolder/$f" ]; then
+      oldFileSize=$(stat -c%s "$backupFolder/$f")
+      newFileSize=$(stat -c%s "$sourceFolder/$f")
       if [ $oldFileSize -ne $newFileSize ]; then
-        mv "$backupFolder/$file" "$backupFolder/$file.$currentDate"
-        cp "$sourceFolder/$file" "$backupFolder/$file"
-        changedFilesInfo=$changedFilesInfo"$file $file.$currentDate "
+        mv "$backupFolder/$f" "$backupFolder/$f.$currentDate"
+        cp "$sourceFolder/$f" "$backupFolder/$f"
+        changedFilesInfo=$changedFilesInfo"$f $f.$currentDate "
       fi
     else
-      cp "$sourceFolder/$file" "$backupFolder/$file"
-      echo "$file" >> $reportFilename
+      cp "$sourceFolder/$f" "$backupFolder/$f"
+      echo "$f" >> $reportFilename
     fi
   done
 

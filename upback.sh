@@ -17,6 +17,6 @@ if [ ! -d "$restoreFolder" ]; then
   mkdir "$restoreFolder"
 fi
 
-for file in $files; do
-  cp "$lastBackupFolder/$file" "$restoreFolder/$file"
+echo "$files" | while read f; do
+  cp "$lastBackupFolder/$f" "$restoreFolder/$f"
 done
